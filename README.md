@@ -8,7 +8,7 @@ It is written in C++ based on Qt, so it can run on many different platforms.
 
 ## renderings
 
-![ImagePlayer 2022-09-13 00-42-53 00_00_00-00_00_30](C:\Users\19462\Videos\Captures\ImagePlayer 2022-09-13 00-42-53 00_00_00-00_00_30.gif)
+![ImagePlayer 2022-09-13 00-42-53 00_00_00-00_00_30](https://user-images.githubusercontent.com/66109192/189711190-18bc15a2-1dca-4a21-8df3-959f1998c268.gif)
 
 ## List of achievements
 
