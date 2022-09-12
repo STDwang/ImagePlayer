@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>qml/Index.qml</file>
+        <file>qml/PToolbar.qml</file>
+        <file>qml/common/Footerbar.qml</file>
+        <file>qml/common/ImageConfigDialog.qml</file>
+        <file>qml/common/PenTableSizeDialog.qml</file>
+        <file>qml/common/PenZoomTip.qml</file>
+        <file>qml/common/Topbar.qml</file>
+        <file>qml/common/PenAerialView.qml</file>
+        <file>qml/common/PenComboBox.qml</file>
+        <file>res/svg/close.svg</file>
+        <file>res/svg/hide.svg</file>
+        <file>res/svg/max.svg</file>
+        <file>res/svg/min.svg</file>
+        <file>res/png/sate(1).png</file>
+    </qresource>
+</RCC>
