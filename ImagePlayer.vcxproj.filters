@@ -37,6 +37,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="t2d\theme\ThemeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\def.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\imageprovider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,15 +52,72 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="t2d\qml_plugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\rawimage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\t2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tcolor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\interface\tdialogitem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgetbackground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgetborder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgeticon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgetitem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgetlabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\gadget\tgadgetscrollbar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\theme\theme_binder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\theme\theme_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\toou2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\controls\interface\ttoastitem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t2d\world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="t2d\theme\ThemeManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="t2d\Toou2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="t2d\def.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <ClInclude Include="src\imageprovider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <QtMoc Include="src\imagesever.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\qml_plugin.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <ClInclude Include="src\rawdatatype.h">
@@ -63,8 +126,51 @@
     <QtMoc Include="src\rawimage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="t2d\t2d.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tcolor.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\interface\tdialogitem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgetbackground.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgetborder.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgeticon.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgetitem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgetlabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\gadget\tgadgetscrollbar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\theme\theme_binder.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\theme\theme_handler.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\controls\interface\ttoastitem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="t2d\world.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    
+    
+    
+    
     
     
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -73,6 +179,36 @@
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -103,19 +239,181 @@
     <None Include="qml\common\PenZoomTip.qml">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="qml\RawToolsBar.qml">
+    <None Include="t2d\controls\TAvatar.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TAwesomeIcon.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TBadge.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TBusyIndicator.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TButton.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TCarousel.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TCarouselElement.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TCheckBox.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TDialog.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TDialogBasic.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TDialogButton.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TDividerLine.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TFlickable.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TFpsMonitor.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TIcon.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TIconButton.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TImage.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TImageButton.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TInputField.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TLabel.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TMask.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TMouseArea.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TNavigationBar.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TNavigationElement.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TObject.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TPagination.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TPopover.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TPopoverElement.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TPopoverMenu.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TPopup.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TProgressBar.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TRadioBox.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TRadioBoxGroup.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TRectangle.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TSVGIcon.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TScrollbarH.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TScrollbarV.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TSwitch.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TTag.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\controls\TToast.qml">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="qml\common\Topbar.qml">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="t2d\resource\svg\close-px.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\svg\close.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\svg\close.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\svg\error.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\font\fontawesome-webfont.ttf">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\svg\hide.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\svg\info.svg">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="main.qml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\font\mask.cso">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\svg\max.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\svg\min.svg">
       <Filter>Resource Files</Filter>
     </None>
     <QtRcc Include="qml.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
     <None Include="qtquickcontrols2.conf">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\png\sate(1).png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\svg\success.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="t2d\resource\font\svg.cso">
+      <Filter>Resource Files</Filter>
+    </None>
+    <QtRcc Include="t2d\t2d_res.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <None Include="t2d\resource\svg\warning.svg">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
