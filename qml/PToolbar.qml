@@ -96,7 +96,7 @@ ToolBar {
             }
         }
         MouseArea {
-            height: 50
+            height: 30
             width: parent.width
             hoverEnabled: true;
             TIconButton {
