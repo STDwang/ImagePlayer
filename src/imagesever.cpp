@@ -29,6 +29,9 @@ imageSever::imageSever(QObject* parent) : QObject(parent)
 
 	rawThread->start();
 	m_pImgProvider = new ImageProvider();
+
+    m_pImgProvider->setImageViewSize(1, 1);
+    emit sendSetViewSizeBySon(1, 1);
 }
 /**
  * @brief 函数简要说明-设置二维存储视图
