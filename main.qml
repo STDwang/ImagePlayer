@@ -104,8 +104,5 @@ ApplicationWindow {
             tablesizedia.close();
             imagesever.setViewSize(rowCount, columnCount);
         }
-        onClosed: {
-            if(!isSelected) tablesizedia.open();
-        }
     }
 }

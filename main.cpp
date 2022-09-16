@@ -13,7 +13,6 @@ int main(int argc, char* argv[])
 	app.setApplicationName("PenTool");
 	app.setWindowIcon(QIcon(":/res/png/sate(1).png"));
 
-
 	imageSever* imagesever = new imageSever();
 	engine.rootContext()->setContextProperty("imagesever", imagesever);
 	engine.addImageProvider(QLatin1String("CodeImg"), imagesever->m_pImgProvider);

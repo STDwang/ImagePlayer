@@ -72,6 +72,37 @@ Rectangle{
                 duration: 100
             }
         }
+        MouseArea {
+            height: parent.height
+            width: minWinButton.width
+            hoverEnabled: true;
+            TIconButton {
+                width: parent.width
+                icon.source: TAwesomeType.FA_th
+                icon.position: TPosition.Only;
+                icon.color: "#C7C7C7"
+                backgroundComponent: null;
+                onClicked: {
+                    tablesizedia.open();
+                }
+            }
+            ToolTip {
+                id: viewTip
+                delay: 500              //tooltip 500ms后出现
+                timeout: 5000           //tooltip 5s后自动消失
+                text: qsTr("视图布局")
+                background: Rectangle {
+                    border.color: "#373E47"
+                    radius: 4
+                }
+            }
+            onEntered: {
+                viewTip.visible = true;
+            }
+            onExited: {
+                viewTip.visible = false;
+            }
+        }
         //最小化窗口按钮
         TIconButton{
             id:minWinButton
