@@ -8,6 +8,8 @@ SUBDIRS += \
     t2d/Toou2D.pro
 RESOURCES += qml.qrc \
     t2d/t2d_res.qrc
+RC_FILE = \
+logo.rc
 
 HEADERS += \
     src/imageprovider.h \

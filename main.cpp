@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	QApplication app(argc, argv);
 	QQmlApplicationEngine engine;
     Toou2D t; t.create(&engine);
-	app.setApplicationName("PenTool");
+    app.setApplicationName("ImagePlayer");
 	app.setWindowIcon(QIcon(":/res/png/sate(1).png"));
 
 	imageSever* imagesever = new imageSever();
