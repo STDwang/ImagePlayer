@@ -34,6 +34,6 @@ just run is ok.
 To use ImagePlayer as a library in your c++ project, add the library :
 
 ```xml
-waiting for development
+waiting for development 1
 ```
 
