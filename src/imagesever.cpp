@@ -1,4 +1,4 @@
-﻿#include "imagesever.h"
+#include "imagesever.h"
 #include <QFile>
 #include <QDir>
 #include <./src/rawdatatype.h>
@@ -33,6 +33,7 @@ imageSever::imageSever(QObject* parent) : QObject(parent)
     m_pImgProvider->setImageViewSize(1, 1);
     emit sendSetViewSizeBySon(1, 1);
 }
+
 /**
  * @brief 函数简要说明-设置二维存储视图
  * @param int	[视图行位置]
@@ -44,6 +45,7 @@ void imageSever::setViewSize(int row, int col) {
 	m_pImgProvider->setImageViewSize(row, col);
 	emit sendSetViewSizeBySon(row, col);
 }
+
 /**
  * @brief 函数简要说明-得到图片文件大小
  * @param QString	[图片路径]
@@ -53,6 +55,7 @@ void imageSever::setViewSize(int row, int col) {
 void imageSever::getImageSize(QString path) {
 	emit sendGetImageSizeBySon(path);
 }
+
 /**
  * @brief 函数简要说明-打开图片
  * @param int		[视图行位置]
@@ -66,6 +69,7 @@ void imageSever::getImageSize(QString path) {
 void imageSever::openImage(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse) {
     emit sendOpenImageBySon(row, col, path, w, h, d, reverse);
 }
+
 /**
  * @brief 函数简要说明-根据(x,y)找灰度值
  * @param int	[视图行位置]
@@ -78,6 +82,7 @@ void imageSever::openImage(int row, int col, QString path, qreal w, qreal h, QSt
 void imageSever::getPixValue(int row, int col, int x, int y) {
 	emit sendGetPixValueBySon(row, col, x, y);
 }
+
 /**
  * @brief 函数简要说明-保存图片
  * @param int		[所选图像视图行位置]
@@ -103,6 +108,7 @@ void imageSever::saveImage(int row, int col, QString path, QString type) {
 void imageSever::getImageSizeFromSon(qint64 size) {
 	emit sendImageSizeToUI(size);
 }
+
 /**
  * @brief 函数简要说明-得到图片并发送给UI界面
  * @param int		[所选图像视图行位置]
@@ -116,6 +122,7 @@ void imageSever::openImageFromSon(int row, int col, bool tip, QImage img) {
 	m_pImgProvider->imgs[row][col] = img;
 	emit sendImageToUI(row, col, tip, img.width(), img.height());
 }
+
 /**
  * @brief 函数简要说明-得到xyv并发送给UI界面
  * @param bool	[是否成功]
@@ -128,6 +135,7 @@ void imageSever::openImageFromSon(int row, int col, bool tip, QImage img) {
 void imageSever::getPixValueFromSon(bool tip, int x, int y, int v) {
 	emit sendPixValueToUI(tip, x, y, v);
 }
+
 /**
  * @brief 函数简要说明-保存并发送结果给UI界面
  * @param bool	[是否成功保存]
@@ -136,4 +144,24 @@ void imageSever::getPixValueFromSon(bool tip, int x, int y, int v) {
  */
 void imageSever::saveImageFromSon(bool tip) {
 	emit sendSaveTipToUI(tip);
+}
+
+/**
+ * @brief 设置图像缩放比
+ * @param scale	[缩放比]
+ *
+ * @return null
+ */
+void imageSever::setImageScaled(double scale) {
+    m_pImgProvider->setImageScaled(scale);
+}
+
+/**
+ * @brief 设置鸟瞰图图像缩放比
+ * @param scale	[缩放比]
+ *
+ * @return null
+ */
+void imageSever::setImageAerialScaled(double scale) {
+    m_pImgAerialProvider->setImageScaled(scale);
 }

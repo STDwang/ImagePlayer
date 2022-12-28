@@ -20,7 +20,8 @@ class imageSever : public QObject
 	Q_OBJECT
 public:
 	imageSever(QObject* parent = 0);
-	ImageProvider* m_pImgProvider;
+    ImageProvider* m_pImgProvider;
+    ImageProvider* m_pImgAerialProvider;
 signals:
 	void sendSetViewSizeBySon(int row, int col);
 	void sendGetImageSizeBySon(QString path);
@@ -38,6 +39,10 @@ public slots:
     void openImage(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse);
 	void saveImage(int row, int col, QString path, QString type);
 	void getPixValue(int row, int col, int x, int y);
+    //设置图像缩放比
+    void setImageScaled(double scale);
+    //设置鸟瞰图图像缩放比
+    void setImageAerialScaled(double scale);
 private slots:
 	void getImageSizeFromSon(qint64 size);
 	void openImageFromSon(int row, int col, bool tip, QImage img);

@@ -240,6 +240,9 @@ Item {
                                         return;
                                     }
                                 }
+                                //请求cpp将缩放倍数设置为beishu
+                                imagesever.setImageScaled(beishu);
+
                                 imageHeight = privateImageData.height * beishu;
                                 imageWidth = privateImageData.width * beishu;
                                 imageX = old_x - imageWidth * biliX;
@@ -251,6 +254,10 @@ Item {
                                 beishuTip.text = Math.round(beishu * 100).toString() + "%";
                                 beishuTip.visible = true;
                                 beishuTip.timerStart();
+
+                                //强制刷新图像，重新申请缩放后的图像源（之前的图像源尺寸是不变的，缩放仅在qml端）
+                                stackImage.source = "";
+                                stackImage.source = "image://CodeImg/" + String(privateImageData.row) + "_" + String(privateImageData.col) + "###" + Date.now();
                             }
                         }
                         DropArea {

@@ -11,13 +11,13 @@
 
 struct RawImageData
 {
-	QImage nowImage;//Í¼Æ¬
-	QString srcPath;//Â·¾¶
-        QString imageType;//Â·¾¶
-	QSizeF imageSize;//Í¼Æ¬³ß´ç
+	QImage nowImage;//å›¾ç‰‡
+	QString srcPath;//è·¯å¾„
+    QString imageType;//è·¯å¾„
+	QSizeF imageSize;//å›¾ç‰‡å°ºå¯¸
 
-	qint64 pixelCount;//ÏñËØ¸öÊı
-        std::vector<uchar> pData8;
+	qint64 pixelCount;//åƒç´ ä¸ªæ•°
+    std::vector<uchar> pData8;
 	std::vector<std::vector<ushort>> imageData;
 };
 

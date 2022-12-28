@@ -1,4 +1,4 @@
-﻿#include <QQmlApplicationEngine>
+#include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QApplication>
 #include <QIcon>
@@ -15,7 +15,8 @@ int main(int argc, char* argv[])
 
 	imageSever* imagesever = new imageSever();
 	engine.rootContext()->setContextProperty("imagesever", imagesever);
-	engine.addImageProvider(QLatin1String("CodeImg"), imagesever->m_pImgProvider);
+    engine.addImageProvider(QLatin1String("CodeImg"), imagesever->m_pImgProvider);
+    engine.addImageProvider(QLatin1String("CodeImgAerial"), imagesever->m_pImgAerialProvider);
 
 	const QUrl url(QStringLiteral("qrc:/main.qml"));
 	QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject* obj, const QUrl& objUrl) {

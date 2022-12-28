@@ -42,7 +42,8 @@ ToolBar {
             }else{
                 global.tempPath = [];
                 global.tempPath.push(openImageDialog.files[0]);
-                openImage(openImageDialog.files[0], 800, 600, "8-bit");
+                //假的，发过去也不用它，懒得新开一个接口
+                openImage(openImageDialog.files[0], 800, 600, 24, true);
             }
         }
     }

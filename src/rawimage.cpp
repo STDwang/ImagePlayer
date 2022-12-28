@@ -1,17 +1,8 @@
-﻿#include "rawimage.h"
+#include "rawimage.h"
 #include <QFile>
-/**
- * @brief 函数简要说明-构造函数,连接信号-槽
- *
- * @return 返回说明
- *     -<em>RawImage</em> 一个RawImage对象
- */
+#include <QTextCodec>
 RawImage::RawImage(QObject* parent) : QObject(parent) {}
-/**
- * @brief 函数简要说明-辅助函数，反转字节
- *
- * @return void
- */
+
 template <typename T>
 T ReverseBytes(T oldValue)
 {
@@ -25,13 +16,7 @@ T ReverseBytes(T oldValue)
 	}
 	return newValue;
 }
-/**
- * @brief 函数简要说明-设置二维存储视图
- * @param int	[视图行位置]
- * @param int	[视图列位置]
- *
- * @return null
- */
+
 void RawImage::setViewSizeBySon(int row, int col) {
 	rawDataList.clear();
 	rawDataList.resize(row);
@@ -39,25 +24,14 @@ void RawImage::setViewSizeBySon(int row, int col) {
 		rawDataList[i].resize(col);
 	}
 }
-/**
- * @brief 函数简要说明-得到图片文件大小
- * @param QString	[图片路径]
- *
- * @return null
- */
+
 void RawImage::getImageSizeBySon(QString path) {
 	srcPathTemp = path.remove("file:///");
 	// 读取Raw文件的数据
 	QFile file(srcPathTemp);
 	emit sendFileSize(file.size());
 }
-/**
- * @brief 函数简要说明-打开raw图片
- * @param int		[视图行位置]
- * @param int		[视图列位置]
- *
- * @return null
- */
+
 void RawImage::openRawImage(int row, int col, bool reverse) {
 	rawDataList[row][col].imageData.clear();
     rawDataList[row][col].pData8.clear();
@@ -65,21 +39,22 @@ void RawImage::openRawImage(int row, int col, bool reverse) {
     pData16.resize(rawDataList[row][col].pixelCount);
 
 	// 读取Raw文件的数据
-	QByteArray ba1;
-	ba1.append(rawDataList[row][col].srcPath);
-	const char* rpath = ba1.data();
-	FILE* rfid = fopen(rpath, "rb");
+    QTextCodec* tc = QTextCodec::codecForName("GBK");
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
+    QByteArray ba1 = rawDataList[row][col].srcPath.toLocal8Bit();
+    FILE* rfid = fopen(ba1.data(), "rb");
+
 	if (rfid == NULL) return;
     fread(&pData16[0], sizeof(ushort), rawDataList[row][col].pixelCount, rfid);
-
+    //字节取反
     if(reverse){
         for (int i = 0; i < rawDataList[row][col].pixelCount; i++) {
             pData16[i] = ReverseBytes(pData16[i]);
         }
     }
-
 	fclose(rfid);
 
+    //原数据转二维
 	rawDataList[row][col].imageData.resize(int(rawDataList[row][col].imageSize.height()));
 	for (int i = 0; i < rawDataList[row][col].imageSize.height(); i++) {
 		rawDataList[row][col].imageData[i].resize(int(rawDataList[row][col].imageSize.width()));
@@ -88,46 +63,40 @@ void RawImage::openRawImage(int row, int col, bool reverse) {
 		}
 	}
 
+    //原数据转8字节，压缩灰度空间
     double tempMin = *min_element(pData16.begin(), pData16.end());
     double tempMax = *max_element(pData16.begin(), pData16.end());
-
-    rawDataList[row][col].pData8.resize(rawDataList[row][col].pixelCount);
     double unit = (tempMax - tempMin) / 256;
-	uchar tempP8;
+
+    /*int linewidth = (rawDataList[row][col].imageSize.width() * 8 + 31)/32 * 4;
+    rawDataList[row][col].pData8.resize(linewidth * rawDataList[row][col].imageSize.height());
+    for (int i = 0; i < rawDataList[row][col].imageSize.height(); i++) {
+        for (int j = 0; j < rawDataList[row][col].imageSize.width(); j++) {
+			rawDataList[row][col].pData8[i * linewidth + j] = uchar((pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit == 256 ?
+				255 : (pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit);
+        }
+    }*/
+
+	rawDataList[row][col].pData8.resize(rawDataList[row][col].pixelCount);
 	for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
 	{
-        rawDataList[row][col].pData8[i] = uchar((pData16[i] - tempMin) / unit == 256 ?
-            255 : (pData16[i] - tempMin) / unit);
+		rawDataList[row][col].pData8[i] = uchar((pData16[i] - tempMin) / unit == 256 ?
+			255 : (pData16[i] - tempMin) / unit);
 	}
 
+    //数据格式转为QImage并转发
     rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
         int(rawDataList[row][col].imageSize.width()),
 		int(rawDataList[row][col].imageSize.height()),
 		QImage::Format_Indexed8);
-
 	emit sendImage(row, col, true, rawDataList[row][col].nowImage);
 }
-/**
- * @brief 函数简要说明-打开其他格式图片
- * @param int		[视图行位置]
- * @param int		[视图列位置]
- *
- * @return null
- */
+
 void RawImage::openOtherTypeImage(int row, int col) {
 	rawDataList[row][col].nowImage = QImage(rawDataList[row][col].srcPath);
 	emit sendImage(row, col, true, rawDataList[row][col].nowImage);
 }
-/**
- * @brief 函数简要说明-打开图片
- * @param int		[视图行位置]
- * @param int		[视图列位置]
- * @param qreal		[宽度]
- * @param qreal		[高度]
- * @param QString	[位深]
- *
- * @return null
- */
+
 void RawImage::openImageBySon(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse) {
 	if (w == 0.0 || h == 0.0) {
 		QImage temp;
@@ -150,15 +119,7 @@ void RawImage::openImageBySon(int row, int col, QString path, qreal w, qreal h, 
 		openOtherTypeImage(row, col);
 	}
 }
-/**
- * @brief 函数简要说明-根据(x,y)找灰度值
- * @param int	[视图行位置]
- * @param int	[视图列位置]
- * @param int	[x坐标]
- * @param int	[y坐标]
- *
- * @return void
- */
+
 void RawImage::getPixValueBySon(int row, int col, int x, int y) {
 	if (x <= 0) x = 0;
 	if (y <= 0) y = 0;
@@ -177,15 +138,7 @@ void RawImage::getPixValueBySon(int row, int col, int x, int y) {
 		emit sendPixValue(true, x, y, rawDataList[row][col].nowImage.pixelColor(x, y).red());
 	}
 }
-/**
- * @brief 函数简要说明-保存图片
- * @param int		[所选图像视图行位置]
- * @param int		[所选图像视图列位置]
- * @param QString	[保存路径]
- * @param QString	[保存格式]
- *
- * @return null
- */
+
 void RawImage::saveImageBySon(int row, int col, QString path, QString type) {
 	if (rawDataList[row][col].nowImage.save(path.remove("file:///"))) {
 		emit sendSaveTip(true);

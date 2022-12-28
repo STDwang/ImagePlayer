@@ -1,4 +1,0 @@
-module Toou2D
-plugin Toou2D
-classname Toou2DQmlPlugin
-typeinfo plugin.qmltypes
