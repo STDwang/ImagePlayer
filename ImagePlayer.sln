@@ -3,23 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32901.82
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImagePlayer", "ImagePlayer.vcxproj", "{077F3473-89BB-3A7F-A459-C90CFABAE2AE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImagePlayer", "ImagePlayer.vcxproj", "{975142FA-AEBA-3546-8606-6A7A0C667334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{077F3473-89BB-3A7F-A459-C90CFABAE2AE}.Debug|x86.ActiveCfg = Debug|Win32
-		{077F3473-89BB-3A7F-A459-C90CFABAE2AE}.Debug|x86.Build.0 = Debug|Win32
-		{077F3473-89BB-3A7F-A459-C90CFABAE2AE}.Release|x86.ActiveCfg = Release|Win32
-		{077F3473-89BB-3A7F-A459-C90CFABAE2AE}.Release|x86.Build.0 = Release|Win32
+		{975142FA-AEBA-3546-8606-6A7A0C667334}.Debug|x64.ActiveCfg = Debug|x64
+		{975142FA-AEBA-3546-8606-6A7A0C667334}.Debug|x64.Build.0 = Debug|x64
+		{975142FA-AEBA-3546-8606-6A7A0C667334}.Release|x64.ActiveCfg = Release|x64
+		{975142FA-AEBA-3546-8606-6A7A0C667334}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {234171D0-9FCC-4F87-938B-AF9E6A6F457F}
+		SolutionGuid = {59659A98-36FB-43C6-8442-1E222A3744E4}
 	EndGlobalSection
 EndGlobal
