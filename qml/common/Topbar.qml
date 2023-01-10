@@ -108,7 +108,7 @@ Rectangle{
             id:minWinButton
             icon.position: TPosition.Only;
             icon.source: "qrc:/res/svg/hide.svg";
-            icon.color: "#9BB3C7"
+            icon.color: "#C7C7C7"
             backgroundComponent: null;
             anchors.verticalCenter: parent.verticalCenter
             onClicked: {
@@ -120,7 +120,7 @@ Rectangle{
             id:maxWinButton
             icon.position: TPosition.Only;
             icon.source: "qrc:/res/svg/max.svg";
-            icon.color: "#9BB3C7"
+            icon.color: "#C7C7C7"
             backgroundComponent: null;
             anchors.verticalCenter: minWinButton.verticalCenter
             onClicked: {
@@ -138,7 +138,7 @@ Rectangle{
             id:closeWinButton
             icon.position: TPosition.Only;
             icon.source: "qrc:/res/svg/close.svg";
-            icon.color: "#9BB3C7"
+            icon.color: "#C7C7C7"
             backgroundComponent: null;
             anchors.verticalCenter: minWinButton.verticalCenter
             onClicked: {

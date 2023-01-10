@@ -2,16 +2,18 @@
 #include <QQmlContext>
 #include <QApplication>
 #include <QIcon>
-#include "t2d/Toou2D.h"
+//#include "t2d/Toou2D.h"
+#include "./src/qmlplot.h"
 #include <./src/imagesever.h>
 int main(int argc, char* argv[])
 {
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication app(argc, argv);
-	QQmlApplicationEngine engine;
-    Toou2D t; t.create(&engine);
-    app.setApplicationName("ImagePlayer");
+	app.setApplicationName("ImagePlayer");
 	app.setWindowIcon(QIcon(":/res/png/sate(1).png"));
+	QQmlApplicationEngine engine;
+    //Toou2D t; t.create(&engine);
+	qmlRegisterType<CustomHistPlotItem>("an.qml.CustomPlot", 1, 0, "CustomHistPlotItem");
 
 	imageSever* imagesever = new imageSever();
 	engine.rootContext()->setContextProperty("imagesever", imagesever);

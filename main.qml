@@ -79,21 +79,24 @@ ApplicationWindow {
         mouseAreaCursorShape: Qt.PointingHandCursor
         appStartupTheme: "Dark"
     }
-    //存储全局变量。
-    property QtObject global: QtObject{
-        property var    srcPath:    [];
-        property var    tempPath:   [];
-    }
 
+    //存储全局变量。
     property QtObject rawConfig: QtObject {
         property bool   isOpened:       false;
         property bool   isOpening:      false;
+        property string tempPath:       "";
         property string imgPath:        "";
         property real   size:           0;
 
         property real   x:              0;
         property real   y:              0;
         property real   v:              0;
+
+        property real   min:            0;
+        property real   max:            0;
+        property real   autoMin:        0;
+        property real   autoMax:        0;
+        property var    hist:           [];
     }
 
     PenTableSizeDialog{

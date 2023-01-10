@@ -2,24 +2,20 @@
 #include <QFile>
 #include <QDir>
 #include <./src/rawdatatype.h>
-/**
- * @brief 函数简要说明-构造函数,连接信号-槽
- *
- * @return 返回说明
- *     -<em>imageSever</em> 一个imageSever对象
- */
 imageSever::imageSever(QObject* parent) : QObject(parent)
 {
 	rawThread = new QThread;
+    connect(rawThread, SIGNAL(finished()), rawThread, SLOT(deleteLater()));
+
 	rawImage = new RawImage();
-	rawImage->moveToThread(rawThread);
-	connect(this, SIGNAL(sendSetViewSizeBySon(int, int)), rawImage, SLOT(setViewSizeBySon(int, int)));
+    rawImage->moveToThread(rawThread);
+    connect(this, SIGNAL(sendSetViewSizeBySon(int, int)), rawImage, SLOT(setViewSizeBySon(int, int)));
 
 	connect(this, SIGNAL(sendGetImageSizeBySon(QString)), rawImage, SLOT(getImageSizeBySon(QString)));
 	connect(rawImage, SIGNAL(sendFileSize(qint64)), this, SLOT(getImageSizeFromSon(qint64)));
 
     connect(this, SIGNAL(sendOpenImageBySon(int, int, QString, qreal, qreal, QString, bool)), rawImage, SLOT(openImageBySon(int, int, QString, qreal, qreal, QString, bool)));
-	connect(rawImage, SIGNAL(sendImage(int, int, bool, QImage)), this, SLOT(openImageFromSon(int, int, bool, QImage)));
+	connect(rawImage, SIGNAL(sendImage(int, int, bool, QImage, QVariant)), this, SLOT(openImageFromSon(int, int, bool, QImage, QVariant)));
 
 	connect(this, SIGNAL(sendGetPixValueBySon(int, int, int, int)), rawImage, SLOT(getPixValueBySon(int, int, int, int)));
 	connect(rawImage, SIGNAL(sendPixValue(bool, int, int, int)), this, SLOT(getPixValueFromSon(bool, int, int, int)));
@@ -27,141 +23,102 @@ imageSever::imageSever(QObject* parent) : QObject(parent)
 	connect(this, SIGNAL(sendSaveImageBySon(int, int, QString, QString)), rawImage, SLOT(saveImageBySon(int, int, QString, QString)));
 	connect(rawImage, SIGNAL(sendSaveTip(bool)), this, SLOT(saveImageFromSon(bool)));
 
-	rawThread->start();
-	m_pImgProvider = new ImageProvider();
+    connect(this, SIGNAL(sendAutoImageBySon(int, int)), rawImage, SLOT(autoImageBySon(int, int)));
+    connect(rawImage, SIGNAL(sendAutoTip(bool)), this, SLOT(autoImageFromSon(bool)));
 
+    connect(this, SIGNAL(sendReverseImageBySon(int, int)), rawImage, SLOT(reverseImageBySon(int, int)));
+    connect(rawImage, SIGNAL(sendReverseTip(bool)), this, SLOT(reverseImageFromSon(bool)));
+
+    connect(rawImage, SIGNAL(sendMinMax(int, int, int, int, int, int)), this, SLOT(minMaxFromSon(int, int, int, int, int, int)));
+
+	m_pImgProvider = new ImageProvider();
     m_pImgProvider->setImageViewSize(1, 1);
+    m_pImgAerialProvider = new ImageProvider();
+    m_pImgAerialProvider->setImageViewSize(1, 1);
+
     emit sendSetViewSizeBySon(1, 1);
+
+    rawThread->start();
 }
 
-/**
- * @brief 函数简要说明-设置二维存储视图
- * @param int	[视图行位置]
- * @param int	[视图列位置]
- *
- * @return null
- */
+imageSever::~imageSever() {
+    rawThread->quit();
+    rawThread = nullptr;
+
+    delete rawImage;
+    rawImage = nullptr;
+    delete m_pImgProvider;
+    m_pImgProvider = nullptr;
+    delete m_pImgAerialProvider;
+    m_pImgAerialProvider = nullptr;
+}
+
 void imageSever::setViewSize(int row, int col) {
 	m_pImgProvider->setImageViewSize(row, col);
 	emit sendSetViewSizeBySon(row, col);
 }
 
-/**
- * @brief 函数简要说明-得到图片文件大小
- * @param QString	[图片路径]
- *
- * @return null
- */
-void imageSever::getImageSize(QString path) {
-	emit sendGetImageSizeBySon(path);
-}
-
-/**
- * @brief 函数简要说明-打开图片
- * @param int		[视图行位置]
- * @param int		[视图列位置]
- * @param qreal		[宽度]
- * @param qreal		[高度]
- * @param QString	[位深]
- *
- * @return null
- */
-void imageSever::openImage(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse) {
-    emit sendOpenImageBySon(row, col, path, w, h, d, reverse);
-}
-
-/**
- * @brief 函数简要说明-根据(x,y)找灰度值
- * @param int	[视图行位置]
- * @param int	[视图列位置]
- * @param int	[x坐标]
- * @param int	[y坐标]
- *
- * @return void
- */
-void imageSever::getPixValue(int row, int col, int x, int y) {
-	emit sendGetPixValueBySon(row, col, x, y);
-}
-
-/**
- * @brief 函数简要说明-保存图片
- * @param int		[所选图像视图行位置]
- * @param int		[所选图像视图列位置]
- * @param QString	[保存路径]
- * @param QString	[保存格式]
- *
- * @return null
- */
-void imageSever::saveImage(int row, int col, QString path, QString type) {
-	emit sendSaveImageBySon(row, col, path, type);
-}
-
-/**
- * @brief 函数简要说明-得到图片文件大小并发送给UI界面
- * @param int		[所选图像视图行位置]
- * @param int		[所选图像视图列位置]
- * @param QString	[保存路径]
- * @param QString	[保存格式]
- *
- * @return null
- */
-void imageSever::getImageSizeFromSon(qint64 size) {
-	emit sendImageSizeToUI(size);
-}
-
-/**
- * @brief 函数简要说明-得到图片并发送给UI界面
- * @param int		[所选图像视图行位置]
- * @param int		[所选图像视图列位置]
- * @param bool		[是否成功打开]
- * @param QImage	[图片]
- *
- * @return null
- */
-void imageSever::openImageFromSon(int row, int col, bool tip, QImage img) {
-	m_pImgProvider->imgs[row][col] = img;
-	emit sendImageToUI(row, col, tip, img.width(), img.height());
-}
-
-/**
- * @brief 函数简要说明-得到xyv并发送给UI界面
- * @param bool	[是否成功]
- * @param int	[x坐标]
- * @param int	[y坐标]
- * @param int	[灰度值]
- *
- * @return null
- */
-void imageSever::getPixValueFromSon(bool tip, int x, int y, int v) {
-	emit sendPixValueToUI(tip, x, y, v);
-}
-
-/**
- * @brief 函数简要说明-保存并发送结果给UI界面
- * @param bool	[是否成功保存]
- *
- * @return null
- */
-void imageSever::saveImageFromSon(bool tip) {
-	emit sendSaveTipToUI(tip);
-}
-
-/**
- * @brief 设置图像缩放比
- * @param scale	[缩放比]
- *
- * @return null
- */
 void imageSever::setImageScaled(double scale) {
     m_pImgProvider->setImageScaled(scale);
 }
 
-/**
- * @brief 设置鸟瞰图图像缩放比
- * @param scale	[缩放比]
- *
- * @return null
- */
 void imageSever::setImageAerialScaled(double scale) {
     m_pImgAerialProvider->setImageScaled(scale);
+}
+
+void imageSever::getImageSize(QString path) {
+	emit sendGetImageSizeBySon(path);
+}
+
+void imageSever::getPixValue(int row, int col, int x, int y) {
+    emit sendGetPixValueBySon(row, col, x, y);
+}
+
+void imageSever::openImage(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse) {
+    emit sendOpenImageBySon(row, col, path, w, h, d, reverse);
+}
+
+void imageSever::saveImage(int row, int col, QString path, QString type) {
+	emit sendSaveImageBySon(row, col, path, type);
+}
+
+void imageSever::autoImage(int row, int col){
+    emit sendAutoImageBySon(row, col);
+}
+
+void imageSever::reverseImage(int row, int col){
+    emit sendReverseImageBySon(row, col);
+}
+
+void imageSever::getImageSizeFromSon(qint64 size) {
+    emit sendImageSizeToUI(size);
+}
+
+void imageSever::getPixValueFromSon(bool tip, int x, int y, int v) {
+    emit sendPixValueToUI(tip, x, y, v);
+}
+
+void imageSever::openImageFromSon(int row, int col, bool tip, QImage img, QVariant hist) {
+	m_pImgProvider->imgs[row][col] = img;
+	emit sendImageToUI(row, col, tip, img.width(), img.height(), hist);
+}
+
+void imageSever::saveImageFromSon(bool tip) {
+	emit sendSaveTipToUI(tip);
+}
+
+void imageSever::autoImageFromSon(bool tip){
+    if(tip) {
+        emit sendRefreshToUI();
+    }
+}
+
+void imageSever::reverseImageFromSon(bool tip){
+    if(tip) {
+        emit sendRefreshToUI();
+    }
+}
+
+void imageSever::minMaxFromSon(int row, int col, int min, int max, int autoMin, int autoMax) {
+    emit sendMinMaxToUI(row, col, min, max, autoMin, autoMax);
 }

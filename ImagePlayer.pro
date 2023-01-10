@@ -1,4 +1,4 @@
-QT += quick widgets
+QT += quick widgets printsupport qml
 CONFIG += c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -16,6 +16,8 @@ HEADERS += \
     src/imagesever.h \
     src/rawimage.h \
     src/rawdatatype.h \
+    src/qcustomplot.h \
+    src/qmlplot.h \
     t2d/controls/gadget/tcolor.h \
     t2d/controls/gadget/tgadgetbackground.h \
     t2d/controls/gadget/tgadgetborder.h \
@@ -39,6 +41,8 @@ SOURCES += \
     src/imageprovider.cpp \
     src/imagesever.cpp \
     src/rawimage.cpp \
+    src/qcustomplot.cpp \
+    src/qmlplot.cpp \
     t2d/controls/gadget/tcolor.cpp \
     t2d/controls/gadget/tgadgetbackground.cpp \
     t2d/controls/gadget/tgadgetborder.cpp \

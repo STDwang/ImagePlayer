@@ -56,6 +56,62 @@ Rectangle{
     }
     Row {
         height: parent.height
+        width: parent.width / 16 * 6
+        anchors.right: parent.right
+        Item {
+            height: minLabel.height
+            width: parent.width * 0.25
+            anchors.verticalCenter: parent.verticalCenter
+            Label{
+                id: minLabel
+                text: "original min: " + rawConfig.min;
+                color: "#FFF";
+                font.bold: true;
+                font.pixelSize: 15;
+            }
+        }
+
+        Item {
+            height: maxLabel.height
+            width: parent.width * 0.3
+            anchors.verticalCenter: parent.verticalCenter
+            Label{
+                id: maxLabel
+                text: "original max: " + rawConfig.max;
+                color: "#FFF";
+                font.bold: true;
+                font.pixelSize: 15;
+            }
+        }
+
+        Item {
+            height: autoMinLabel.height
+            width: parent.width * 0.2
+            anchors.verticalCenter: parent.verticalCenter
+            Label{
+                id: autoMinLabel
+                text: "auto min: " + rawConfig.autoMin;
+                color: "#FFF";
+                font.bold: true;
+                font.pixelSize: 15;
+            }
+        }
+
+        Item {
+            height: autoMaxLabel.height
+            width: parent.width * 0.3
+            anchors.verticalCenter: parent.verticalCenter
+            Label{
+                id: autoMaxLabel
+                text: "auto max: " + rawConfig.autoMax;
+                color: "#FFF";
+                font.bold: true;
+                font.pixelSize: 15;
+            }
+        }
+    }
+    Row {
+        height: parent.height
         anchors.centerIn: parent
         spacing: 5
         TIconButton {

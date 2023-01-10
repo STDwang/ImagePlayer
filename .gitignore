@@ -3,3 +3,8 @@
 ################################################################################
 
 /release
+/.vs/ImagePlayer/v16
+/debug
+/ImagePlayer.vcxproj
+/ImagePlayer.vcxproj.user
+/ImagePlayer.vcxproj.filters

@@ -1,6 +1,8 @@
 ﻿import QtQuick 2.2
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.0
+import an.qml.CustomPlot 1.0
 import Toou2D 1.0
 import "./common"
 Item {
@@ -48,8 +50,7 @@ Item {
             anchors.fill: parent
         }
         onGetImageSize: {
-            global.tempPath = [];
-            global.tempPath.push(uri);
+            rawConfig.tempPath = uri;
             imagesever.getImageSize(uri);
         }
         onOpenImage: {
@@ -61,12 +62,59 @@ Item {
             imagesever.saveImage(rowImageIndex, columnImageIndex, uri, "png");
             rawConfig.isOpening = true;
         }
+        onAutoImage: {
+            imagesever.autoImage(rowImageIndex, columnImageIndex);
+        }
+        onReverseImage: {
+            imagesever.reverseImage(rowImageIndex, columnImageIndex);
+        }
+        onDenoiseImage: {
+            imagesever.denoiseImage(rowImageIndex, columnImageIndex);
+        }
+        onHistImage: {
+            var histForm = {
+                "xmin": rawConfig.min,
+                "xmax": rawConfig.max,
+                "data": rawConfig.hist
+            }
+            histCustomPlot.histPlay(histForm);
+            histPlotWindow.show();
+        }
     }
     TBusyIndicator{
         id: openingBusy
         z:3
         visible: rawConfig.isOpening
         anchors.centerIn: parent;
+    }
+    Window {
+        id: histPlotWindow
+        title: "Hist Plot"
+        minimumWidth: 660;
+        minimumHeight: 340;
+        CustomHistPlotItem {
+            id: histCustomPlot
+            anchors.fill: parent
+            Component.onCompleted: {
+                histCustomPlot.initCustomPlot();
+            }
+            onSendPosTip: {
+                histTip.text = "(" + posX + "," + posY + ")";
+                histTip.visible = true;
+            }
+            onSendLeaveTip: {
+                histTip.visible = false;
+            }
+            ToolTip {
+                id: histTip
+                delay: 50
+                text: qsTr("")
+                background: Rectangle {
+                    border.color: "#373E47"
+                    radius: 4
+                }
+            }
+        }
     }
     Column {
         id: viewColumn
@@ -94,11 +142,16 @@ Item {
                         clip: true
                         QtObject {
                             id: privateImageData
-                            property real   row: cIndex;
-                            property real   col: index;
-                            property string path: ""
-                            property real   width: 0;
-                            property real   height: 0;
+                            property real   row:     cIndex;
+                            property real   col:     index;
+                            property string path:    ""
+                            property real   width:   0;
+                            property real   height:  0;
+                            property real   min:     0;
+                            property real   max:     0;
+                            property real   autoMin: 0;
+                            property real   autoMax: 0;
+                            property var    hist:    [];
                         }
                         Connections {
                             target: imagesever
@@ -106,10 +159,34 @@ Item {
                                 if(cIndex == row && index == col){
                                     privateImageData.height = h;
                                     privateImageData.width = w;
+                                    privateImageData.path = rawConfig.tempPath;
+                                    privateImageData.hist = hist;
+
                                     stackImage.source = "";
-                                    stackImage.source = "image://CodeImg/" + String(privateImageData.row) + "_" + String(privateImageData.col) + "###" + Date.now();
-                                    privateImageData.path = global.tempPath[0];
+                                    stackImage.source = "image://CodeImg/" + String(row) + "_" + String(col) + "###" + Date.now();
+
                                     rawConfig.imgPath = privateImageData.path;
+                                }
+                            }
+
+                            onSendRefreshToUI: {
+                                if(rowImageIndex == privateImageData.row && columnImageIndex == privateImageData.col){
+                                    stackImage.source = "";
+                                    stackImage.source = "image://CodeImg/" + String(rowImageIndex) + "_" + String(columnImageIndex) + "###" + Date.now();
+                                }
+                            }
+
+                            onSendMinMaxToUI: {
+                                if(row == privateImageData.row && col == privateImageData.col){
+                                    privateImageData.min = min;
+                                    privateImageData.max = max;
+                                    privateImageData.autoMin = autoMin;
+                                    privateImageData.autoMax = autoMax;
+
+                                    rawConfig.min = privateImageData.min;
+                                    rawConfig.max = privateImageData.max;
+                                    rawConfig.autoMin = privateImageData.autoMin;
+                                    rawConfig.autoMax = privateImageData.autoMax;
                                 }
                             }
                         }
@@ -193,9 +270,15 @@ Item {
                             hoverEnabled: true
                             propagateComposedEvents: true
                             onClicked: {
-                                rawConfig.imgPath = privateImageData.path;
                                 rowImageIndex = privateImageData.row;
                                 columnImageIndex = privateImageData.col;
+
+                                rawConfig.imgPath = privateImageData.path;
+                                rawConfig.min = privateImageData.min;
+                                rawConfig.max = privateImageData.max;
+                                rawConfig.autoMin = privateImageData.autoMin;
+                                rawConfig.autoMax = privateImageData.autoMax;
+                                rawConfig.hist = privateImageData.hist;
                             }
                             onPositionChanged: {
                                 //拖拽时锁定
@@ -269,9 +352,8 @@ Item {
                             onDropped: {
                                 rowImageIndex = privateImageData.row;
                                 columnImageIndex = privateImageData.col;
-                                global.tempPath = [];
                                 for(var i=0;i<drop.urls.length;i++){
-                                    global.tempPath.push(drop.urls[i]);
+                                    rawConfig.tempPath = drop.urls[i];
                                 }
                                 imagesever.getImageSize(drop.urls[0]);
                                 lefttoolbar.openImageConfigDia(drop.urls[0]);
@@ -307,17 +389,11 @@ Item {
         target: imagesever
         onSendImageToUI: {
             if(tip){
-                TToast.showSuccess("打开成功",TTimePreset.LongTime4s, global.tempPath[0]);
-                global.srcPath.push({
-                                        "path":       global.tempPath[0],
-                                        "size":       rawConfig.size,
-                                        "height":     h,
-                                        "width":      w
-                                    });
+                TToast.showSuccess("打开成功",TTimePreset.LongTime4s, rawConfig.tempPath);
                 imageWidth = w * beishu;
                 imageHeight = h * beishu;
             }else{
-                TToast.showError("打开失败",TTimePreset.LongTime4s, global.tempPath[0]);
+                TToast.showError("打开失败",TTimePreset.LongTime4s, rawConfig.tempPath);
             }
             rawConfig.isOpening = false;
             rawConfig.isOpened = true;
@@ -332,7 +408,7 @@ Item {
         }
         onSendSaveTipToUI: {
             if(tip){
-                TToast.showSuccess("保存成功",TTimePreset.LongTime4s, global.srcPath[global.srcPath.length - 1].path);
+                TToast.showSuccess("保存成功",TTimePreset.LongTime4s, rawConfig.imgPath);
             }else{
                 TToast.showError("保存失败",TTimePreset.LongTime4s, "......");
             }
