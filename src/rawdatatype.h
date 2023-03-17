@@ -28,7 +28,6 @@ struct RawImageData
 
     //auto
     int autoThreshold = 5000;
-    int hmin = 0, hmax = 0;
     std::vector<int> histogram;
 };
 

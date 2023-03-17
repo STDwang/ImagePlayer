@@ -231,7 +231,8 @@ void RawImage::saveImageBySon(int row, int col, QString path, QString type) {
 
 void RawImage::autoImageBySon(int row, int col){
     int limit = rawDataList[row][col].pixelCount / 10;
-    if (rawDataList[row][col].autoThreshold < 10 || (rawDataList[row][col].hmax == rawDataList[row][col].hmin && rawDataList[row][col].hmin == 255))
+    // || (rawDataList[row][col].hmax == rawDataList[row][col].hmin && rawDataList[row][col].hmin == 255)
+    if (rawDataList[row][col].autoThreshold < 10)
         rawDataList[row][col].autoThreshold = 5000;
     else
         rawDataList[row][col].autoThreshold /= 2;
@@ -246,7 +247,7 @@ void RawImage::autoImageBySon(int row, int col){
         if (count > limit) count = 0;
         found = count > threshold;
     } while (!found && i < 255);
-    rawDataList[row][col].hmin = i;
+    int hmin = i;
     i = 256;
     do {
         i--;
@@ -254,12 +255,13 @@ void RawImage::autoImageBySon(int row, int col){
         if (count > limit) count = 0;
         found = count > threshold;
     } while (!found && i > 0);
-    rawDataList[row][col].hmax = i;
+    int hmax = i;
 
     double newMin, newMax;
-    if (rawDataList[row][col].hmax >= rawDataList[row][col].hmin) {
-        newMin = rawDataList[row][col].imin + rawDataList[row][col].hmin * (rawDataList[row][col].imax - rawDataList[row][col].imin) / 256.0;
-        newMax = rawDataList[row][col].imin + rawDataList[row][col].hmax * (rawDataList[row][col].imax - rawDataList[row][col].imin) / 256.0;
+    if (hmax >= hmin) {
+        double binSize = (rawDataList[row][col].imax - rawDataList[row][col].imin) / 256.0;
+        newMin = rawDataList[row][col].imin + hmin * binSize;
+        newMax = rawDataList[row][col].imin + hmax * binSize;
         if (newMin == newMax)
         {
             newMin = rawDataList[row][col].imin;
@@ -267,8 +269,9 @@ void RawImage::autoImageBySon(int row, int col){
         }
     }
     else {
-        newMin = qMin(rawDataList[row][col].tempMin, rawDataList[row][col].tempMax);
-        newMax = qMax(rawDataList[row][col].tempMin, rawDataList[row][col].tempMax);
+        newMin = rawDataList[row][col].imin;
+        newMax = rawDataList[row][col].imax;
+        rawDataList[row][col].autoThreshold = 5000;
     }
 
     emit sendMinMax(row, col, rawDataList[row][col].imin, rawDataList[row][col].imax, newMin, newMax);
