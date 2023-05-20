@@ -17,5 +17,9 @@
         <file>res/svg/max.svg</file>
         <file>res/svg/min.svg</file>
         <file>res/png/sate(1).png</file>
+        <file>res/svg/auto.svg</file>
+        <file>qml/common/DenoiseConfigsDialog.qml</file>
+        <file>res/svg/histogram.svg</file>
+        <file>res/svg/denoise.svg</file>
     </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-﻿import QtQuick 2.1
+import QtQuick 2.1
 import Toou2D 1.0
 import QtQuick.Controls 2.0
 import Qt.labs.platform 1.0 as Labs //名称冲突了要用as，注意Labs要大写开头
@@ -10,7 +10,7 @@ ToolBar {
     signal saveImage(string uri);
     signal autoImage();
     signal reverseImage();
-    signal denoiseImage();
+    signal denoiseImage(string denoiseType, var denoiseRadius);
     signal histImage();
 
     signal openImageConfigDia(string uri);
@@ -25,6 +25,13 @@ ToolBar {
         id: openimagedia
         onIsOK: {
             openImage(openimagedia.srcPath, w, h, d, reverse);
+        }
+    }
+
+    DenoiseConfigsDialog {
+        id: denoiseConfigsDialog
+        onIsOK: {
+            denoiseImage(denoiseType, denoiseRadius);
         }
     }
 
@@ -139,7 +146,7 @@ ToolBar {
             hoverEnabled: true;
             TIconButton {
                 width: parent.width
-                icon.source: TAwesomeType.FA_blind
+                icon.source: "qrc:/res/svg/auto.svg"
                 icon.position: TPosition.Only;
                 icon.color: "#C7C7C7"
                 backgroundComponent: null;
@@ -190,7 +197,7 @@ ToolBar {
                 id: reverseImageTip
                 delay: 500              //tooltip 500ms后出现
                 timeout: 5000           //tooltip 5s后自动消失
-                text: qsTr("reverse")
+                text: qsTr("取反")
                 background: Rectangle {
                     border.color: "#373E47"
                     radius: 4
@@ -209,13 +216,13 @@ ToolBar {
             hoverEnabled: true;
             TIconButton {
                 width: parent.width
-                icon.source: TAwesomeType.FA_angle_double_up
+                icon.source: "qrc:/res/svg/denoise.svg"
                 icon.position: TPosition.Only;
                 icon.color: "#C7C7C7"
                 backgroundComponent: null;
                 onClicked: {
                     if(rawConfig.imgPath != ""){
-                        denoiseImage();
+                        denoiseConfigsDialog.open();
                     }else{
                         TToast.showInfo("操作区无图片",TTimePreset.LongTime4s, "请先打开图片并进行编辑");
                     }
@@ -225,17 +232,17 @@ ToolBar {
                 id: denoiseTip
                 delay: 500              //tooltip 500ms后出现
                 timeout: 5000           //tooltip 5s后自动消失
-                text: qsTr("denoise")
+                text: qsTr("去噪")
                 background: Rectangle {
                     border.color: "#373E47"
                     radius: 4
                 }
             }
             onEntered: {
-                denoiseImageTip.visible = true;
+                denoiseTip.visible = true;
             }
             onExited: {
-                denoiseImageTip.visible = false;
+                denoiseTip.visible = false;
             }
         }
         MouseArea {
@@ -244,7 +251,7 @@ ToolBar {
             hoverEnabled: true;
             TIconButton {
                 width: parent.width
-                icon.source: TAwesomeType.FA_align_justify
+                icon.source: "qrc:/res/svg/histogram.svg"
                 icon.position: TPosition.Only;
                 icon.color: "#C7C7C7"
                 backgroundComponent: null;

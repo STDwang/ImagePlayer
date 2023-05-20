@@ -69,7 +69,7 @@ Item {
             imagesever.reverseImage(rowImageIndex, columnImageIndex);
         }
         onDenoiseImage: {
-            imagesever.denoiseImage(rowImageIndex, columnImageIndex);
+            imagesever.denoiseImage(rowImageIndex, columnImageIndex, denoiseType, denoiseRadius);
         }
         onHistImage: {
             var histForm = {
@@ -77,6 +77,7 @@ Item {
                 "xmax": rawConfig.max,
                 "data": rawConfig.hist
             }
+            console.log(rawConfig.hist)
             histCustomPlot.histPlay(histForm);
             histPlotWindow.show();
         }

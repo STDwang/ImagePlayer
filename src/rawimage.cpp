@@ -140,9 +140,10 @@ void RawImage::openRawImage(int row, int col, bool reverse) {
 
     rawDataList[row][col].histogram = getHistogram(rawDataList[row][col].pData8);
     QVariant hisVar;
-    hisVar.setValue(getHistogram16(rawDataList[row][col].tempMin,
-        rawDataList[row][col].tempMax,
-        rawDataList[row][col].pData16));
+    auto hist = getHistogram16(rawDataList[row][col].tempMin,
+            rawDataList[row][col].tempMax,
+            rawDataList[row][col].pData16);
+    hisVar.setValue(hist);
 
     //数据格式转为QImage并转发
     rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
@@ -159,43 +160,48 @@ void RawImage::openOtherTypeImage(int row, int col) {
     if (!rawDataList[row][col].nowImage.allGray())
     {
         tempImg = rawDataList[row][col].nowImage.convertToFormat(QImage::Format_Grayscale8);
+    }else{
+        tempImg = rawDataList[row][col].nowImage;
     }
-    if (tempImg.isNull())
+
+    int nWidth = tempImg.width();
+    int nHeight = tempImg.height();
+    QVector<int> hist(256, 0);
+
+    uchar * bits = tempImg.bits();
+    for (int j = 0; j < nHeight; j++)
     {
-        int nWidth = tempImg.width();
-        int nHeight = tempImg.height();
-        QVector<int> hist(256, 0);
-
-        for (int j = 0; j < nHeight; j++)
+        for (int k = 0; k < nWidth; k++)
         {
-            for (int k = 0; k < nWidth; k++)
-            {
-                int nIndex = int(tempImg.bits()[j * nHeight + k]);
-                hist[nIndex] = hist.at(nIndex) + 1;
-            }
+            hist[bits[j * nHeight + k]]++;
         }
-
-        int histMin = 256, histMax = 0;
-        for (auto it : hist) {
-            if (it != 0) {
-                histMin = it;
-            }
-        }
-        for (int i = 255; i >= 0; i--) {
-            if (i != 0) {
-                histMax = i;
-            }
-        }
-
-        QVariant hisVar;
-        hisVar.setValue(hist);
-
-        emit sendMinMax(row, col, histMin, histMax, histMin, histMax);
-        emit sendImage(row, col, true, rawDataList[row][col].nowImage, hisVar);
     }
+
+    int histMin = 0, histMax = 0;
+    for(int i = 0; i < hist.size(); i++){
+        if (hist[i] == 0) continue;
+
+        histMin = i;
+        break;
+    }
+    for (int i = 255; i >= 0; i--) {
+        if (hist[i] == 0) continue;
+
+        histMax = i;
+        break;
+    }
+
+    QVariant hisVar;
+    hisVar.setValue(hist);
+
+    emit sendMinMax(row, col, histMin, histMax, histMin, histMax);
+    emit sendImage(row, col, true, rawDataList[row][col].nowImage, hisVar);
 }
 
-void RawImage::openImageBySon(int row, int col, QString path, qreal w, qreal h, QString d, bool reverse) {
+void RawImage::openImageBySon(int row, int col, 
+    QString path, qreal w, qreal h, QString d,
+    bool reverse) 
+{
 	if (w == 0.0 || h == 0.0) {
 		QImage temp;
         QVariant hisVar;
@@ -215,7 +221,8 @@ void RawImage::openImageBySon(int row, int col, QString path, qreal w, qreal h, 
 	}
 	else if (!data.imageType.compare("png", Qt::CaseInsensitive)
 		|| !data.imageType.compare("jpg", Qt::CaseInsensitive)
-		|| !data.imageType.compare("bmp", Qt::CaseInsensitive)) {
+        || !data.imageType.compare("bmp", Qt::CaseInsensitive))
+    {
 		openOtherTypeImage(row, col);
 	}
 }
@@ -230,6 +237,7 @@ void RawImage::saveImageBySon(int row, int col, QString path, QString type) {
 }
 
 void RawImage::autoImageBySon(int row, int col){
+    if(rawDataList[row][col].imageType.compare("raw", Qt::CaseInsensitive)) return;
     int limit = rawDataList[row][col].pixelCount / 10;
     // || (rawDataList[row][col].hmax == rawDataList[row][col].hmin && rawDataList[row][col].hmin == 255)
     if (rawDataList[row][col].autoThreshold < 10)
