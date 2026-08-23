@@ -1,0 +1,7 @@
+{
+    "cmake.useCMakePresets": "never",
+    "cmake.buildDirectory": "${workspaceFolder}/build/${buildKit}",
+    "cmake.configureSettings": {
+        "CMAKE_PREFIX_PATH": "F:/software/Qt/5.9.7/msvc2015"
+    }
+}

@@ -18,45 +18,45 @@ T ReverseBytes(T oldValue)
 }
 
 std::vector<int> getHistogram(std::vector<uchar>& pData8) {
-    std::vector<int> line(256, 0);
-    for (int i = 0; i < pData8.size(); i++) {
-        line[pData8[i]]++;
-    }
-    return line;
+	std::vector<int> line(256, 0);
+	for (int i = 0; i < pData8.size(); i++) {
+		line[pData8[i]]++;
+	}
+	return line;
 }
 
 std::vector<int> getHistogram16(double min, double max, std::vector<ushort>& pData16) {
-    std::vector<int> line(max - min + 1, 0);
-    for (int i = 0; i < pData16.size(); i++) {
-        line[pData16[i] - min]++;
-    }
-    return line;
+	std::vector<int> line(max - min + 1, 0);
+	for (int i = 0; i < pData16.size(); i++) {
+		line[pData16[i] - min]++;
+	}
+	return line;
 }
 
 void RawImage::getImageSizeBySon(QString path) {
-    srcPathTemp = path.remove("file:///");
-    // 读取Raw文件的数据
-    QFile file(srcPathTemp);
-    emit sendFileSize(file.size());
+	srcPathTemp = path.remove("file:///");
+	// 读取Raw文件的数据
+	QFile file(srcPathTemp);
+	emit sendFileSize(file.size());
 }
 
 void RawImage::getPixValueBySon(int row, int col, int x, int y) {
-    if (x <= 0) x = 0;
-    if (y <= 0) y = 0;
-    if (x >= rawDataList[row][col].nowImage.width() - 1) x = rawDataList[row][col].nowImage.width() - 1;
-    if (y >= rawDataList[row][col].nowImage.height() - 1) y = rawDataList[row][col].nowImage.height() - 1;
-    if (!rawDataList[row][col].imageType.compare("raw", Qt::CaseInsensitive)) {
-        if (rawDataList[row][col].imageData.size() < 1) {
-            emit sendPixValue(false, x, y, 0);
-            return;
-        }
-        emit sendPixValue(true, x, y, rawDataList[row][col].imageData[y][x]);
-    }
-    else if (!rawDataList[row][col].imageType.compare("png", Qt::CaseInsensitive)
-        || !rawDataList[row][col].imageType.compare("jpg", Qt::CaseInsensitive)
-        || !rawDataList[row][col].imageType.compare("bmp", Qt::CaseInsensitive)) {
-        emit sendPixValue(true, x, y, rawDataList[row][col].nowImage.pixelColor(x, y).red());
-    }
+	if (x <= 0) x = 0;
+	if (y <= 0) y = 0;
+	if (x >= rawDataList[row][col].nowImage.width() - 1) x = rawDataList[row][col].nowImage.width() - 1;
+	if (y >= rawDataList[row][col].nowImage.height() - 1) y = rawDataList[row][col].nowImage.height() - 1;
+	if (!rawDataList[row][col].imageType.compare("raw", Qt::CaseInsensitive)) {
+		if (rawDataList[row][col].imageData.size() < 1) {
+			emit sendPixValue(false, x, y, 0);
+			return;
+		}
+		emit sendPixValue(true, x, y, rawDataList[row][col].imageData[y][x]);
+	}
+	else if (!rawDataList[row][col].imageType.compare("png", Qt::CaseInsensitive)
+		|| !rawDataList[row][col].imageType.compare("jpg", Qt::CaseInsensitive)
+		|| !rawDataList[row][col].imageType.compare("bmp", Qt::CaseInsensitive)) {
+		emit sendPixValue(true, x, y, rawDataList[row][col].nowImage.pixelColor(x, y).red());
+	}
 }
 
 void RawImage::setViewSizeBySon(int row, int col) {
@@ -68,86 +68,86 @@ void RawImage::setViewSizeBySon(int row, int col) {
 }
 
 void RawImage::setGrayscale(int row, int col, double newMin, double newMax) {
-    rawDataList[row][col].tempMin = newMin;
-    rawDataList[row][col].tempMax = newMax;
-    double unit = (newMax - newMin) / 256.0;
-    double temp = 0;
-    for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
-    {
-        temp = (rawDataList[row][col].pData16[i] - newMin) / unit;
-        if (temp < 0)temp = 0;
-        if (temp > 255)temp = 255;
-        rawDataList[row][col].pData8[i] = uchar(temp);
-    }
-    rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
-        int(rawDataList[row][col].nowImage.width()),
-        int(rawDataList[row][col].nowImage.height()),
-        QImage::Format_Indexed8);
+	rawDataList[row][col].tempMin = newMin;
+	rawDataList[row][col].tempMax = newMax;
+	double unit = (newMax - newMin) / 256.0;
+	double temp = 0;
+	for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
+	{
+		temp = (rawDataList[row][col].pData16[i] - newMin) / unit;
+		if (temp < 0)temp = 0;
+		if (temp > 255)temp = 255;
+		rawDataList[row][col].pData8[i] = uchar(temp);
+	}
+	rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
+		int(rawDataList[row][col].nowImage.width()),
+		int(rawDataList[row][col].nowImage.height()),
+		QImage::Format_Indexed8);
 }
 
 void RawImage::openRawImage(int row, int col, bool reverse) {
 	rawDataList[row][col].imageData.clear();
-    rawDataList[row][col].pData8.clear();
-    rawDataList[row][col].pData16.resize(rawDataList[row][col].pixelCount);
+	rawDataList[row][col].pData8.clear();
+	rawDataList[row][col].pData16.resize(rawDataList[row][col].pixelCount);
 
 	// 读取Raw文件的数据
-    QTextCodec* tc = QTextCodec::codecForName("GBK");
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
-    QByteArray ba1 = rawDataList[row][col].srcPath.toLocal8Bit();
-    FILE* rfid = fopen(ba1.data(), "rb");
+	QTextCodec* tc = QTextCodec::codecForName("GBK");
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
+	QByteArray ba1 = rawDataList[row][col].srcPath.toLocal8Bit();
+	FILE* rfid = fopen(ba1.data(), "rb");
 
 	if (rfid == NULL) return;
-    fread(&rawDataList[row][col].pData16[0], sizeof(ushort), rawDataList[row][col].pixelCount, rfid);
-    //字节取反
-    if(reverse){
-        for (int i = 0; i < rawDataList[row][col].pixelCount; i++) {
-            rawDataList[row][col].pData16[i] = ReverseBytes(rawDataList[row][col].pData16[i]);
-        }
-    }
+	fread(&rawDataList[row][col].pData16[0], sizeof(ushort), rawDataList[row][col].pixelCount, rfid);
+	//字节取反
+	if (reverse) {
+		for (int i = 0; i < rawDataList[row][col].pixelCount; i++) {
+			rawDataList[row][col].pData16[i] = ReverseBytes(rawDataList[row][col].pData16[i]);
+		}
+	}
 	fclose(rfid);
-    std::vector<ushort> temp16 = rawDataList[row][col].pData16;
+	std::vector<ushort> temp16 = rawDataList[row][col].pData16;
 
-    //原数据转二维
+	//原数据转二维
 	rawDataList[row][col].imageData.resize(int(rawDataList[row][col].imageSize.height()));
 	for (int i = 0; i < rawDataList[row][col].imageSize.height(); i++) {
 		rawDataList[row][col].imageData[i].resize(int(rawDataList[row][col].imageSize.width()));
 		for (int j = 0; j < rawDataList[row][col].imageSize.width(); j++) {
-            rawDataList[row][col].imageData[i][j] = temp16[i * int(rawDataList[row][col].imageSize.width()) + j];
+			rawDataList[row][col].imageData[i][j] = temp16[i * int(rawDataList[row][col].imageSize.width()) + j];
 		}
 	}
 
-    //原数据转8字节，压缩灰度空间
-    rawDataList[row][col].imin = rawDataList[row][col].tempMin = *min_element(temp16.begin(), temp16.end());
-    rawDataList[row][col].imax = rawDataList[row][col].tempMax = *max_element(temp16.begin(), temp16.end());
-    emit sendMinMax(row, col, rawDataList[row][col].imin, rawDataList[row][col].imax, rawDataList[row][col].imin, rawDataList[row][col].imax);
-    double unit = (rawDataList[row][col].tempMax - rawDataList[row][col].tempMin) / 256.0;
+	//原数据转8字节，压缩灰度空间
+	rawDataList[row][col].imin = rawDataList[row][col].tempMin = *min_element(temp16.begin(), temp16.end());
+	rawDataList[row][col].imax = rawDataList[row][col].tempMax = *max_element(temp16.begin(), temp16.end());
+	emit sendMinMax(row, col, rawDataList[row][col].imin, rawDataList[row][col].imax, rawDataList[row][col].imin, rawDataList[row][col].imax);
+	double unit = (rawDataList[row][col].tempMax - rawDataList[row][col].tempMin) / 256.0;
 
-    /*int linewidth = (rawDataList[row][col].imageSize.width() * 8 + 31)/32 * 4;
-    rawDataList[row][col].pData8.resize(linewidth * rawDataList[row][col].imageSize.height());
-    for (int i = 0; i < rawDataList[row][col].imageSize.height(); i++) {
-        for (int j = 0; j < rawDataList[row][col].imageSize.width(); j++) {
-            rawDataList[row][col].pData8[i * linewidth + j] = uchar((pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit == 256 ?
-                255 : (pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit);
-        }
-    }*/
+	/*int linewidth = (rawDataList[row][col].imageSize.width() * 8 + 31)/32 * 4;
+	rawDataList[row][col].pData8.resize(linewidth * rawDataList[row][col].imageSize.height());
+	for (int i = 0; i < rawDataList[row][col].imageSize.height(); i++) {
+		for (int j = 0; j < rawDataList[row][col].imageSize.width(); j++) {
+			rawDataList[row][col].pData8[i * linewidth + j] = uchar((pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit == 256 ?
+				255 : (pData16[i * rawDataList[row][col].imageSize.width() + j] - tempMin) / unit);
+		}
+	}*/
 
 	rawDataList[row][col].pData8.resize(rawDataList[row][col].pixelCount);
 	for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
 	{
-        rawDataList[row][col].pData8[i] = uchar((temp16[i] - rawDataList[row][col].tempMin) / unit == 256 ?
-            255 : (temp16[i] - rawDataList[row][col].tempMin) / unit);
+		rawDataList[row][col].pData8[i] = uchar((temp16[i] - rawDataList[row][col].tempMin) / unit == 256 ?
+			255 : (temp16[i] - rawDataList[row][col].tempMin) / unit);
 	}
 
-    rawDataList[row][col].histogram = getHistogram(rawDataList[row][col].pData8);
-    QVariant hisVar;
-    auto hist = getHistogram16(rawDataList[row][col].tempMin,
-            rawDataList[row][col].tempMax,
-            rawDataList[row][col].pData16);
-    hisVar.setValue(hist);
+	rawDataList[row][col].histogram = getHistogram(rawDataList[row][col].pData8);
+	QVariant hisVar;
+	auto hist = getHistogram16(rawDataList[row][col].tempMin,
+		rawDataList[row][col].tempMax,
+		rawDataList[row][col].pData16);
+	hisVar.setValue(hist);
 
-    //数据格式转为QImage并转发
-    rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
-        int(rawDataList[row][col].imageSize.width()),
+	//数据格式转为QImage并转发
+	rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
+		int(rawDataList[row][col].imageSize.width()),
 		int(rawDataList[row][col].imageSize.height()),
 		QImage::Format_Indexed8);
 	emit sendImage(row, col, true, rawDataList[row][col].nowImage, hisVar);
@@ -156,56 +156,58 @@ void RawImage::openRawImage(int row, int col, bool reverse) {
 void RawImage::openOtherTypeImage(int row, int col) {
 	rawDataList[row][col].nowImage = QImage(rawDataList[row][col].srcPath);
 
-    QImage tempImg;
-    if (!rawDataList[row][col].nowImage.allGray())
-    {
-        tempImg = rawDataList[row][col].nowImage.convertToFormat(QImage::Format_Grayscale8);
-    }else{
-        tempImg = rawDataList[row][col].nowImage;
-    }
+	if (rawDataList[row][col].nowImage.isNull()) {
+		QVariant hisVar;
+		hisVar.setValue(QVector<int>());
+		emit sendImage(row, col, false, QImage(), hisVar);
+		return;
+	}
 
-    int nWidth = tempImg.width();
-    int nHeight = tempImg.height();
-    QVector<int> hist(256, 0);
+	// allGray() 仅描述像素值；其底层存储格式仍可以是 RGB32、索引色或单色。
+	// 在计算直方图时，应使用每像素占用 1 字节的已知格式，同时保持 nowImage 不变，以便进行显示或保存
+	const QImage tempImg = rawDataList[row][col].nowImage.convertToFormat(QImage::Format_Grayscale8);
+	int nWidth = tempImg.width();
+	int nHeight = tempImg.height();
+	QVector<int> hist(256, 0);
 
-    uchar * bits = tempImg.bits();
-    for (int j = 0; j < nHeight; j++)
-    {
-        for (int k = 0; k < nWidth; k++)
-        {
-            hist[bits[j * nHeight + k]]++;
-        }
-    }
+	for (int j = 0; j < nHeight; j++)
+	{
+		const uchar* scanLine = tempImg.constScanLine(j);
+		for (int k = 0; k < nWidth; k++)
+		{
+			hist[scanLine[k]]++;
+		}
+	}
 
-    int histMin = 0, histMax = 0;
-    for(int i = 0; i < hist.size(); i++){
-        if (hist[i] == 0) continue;
+	int histMin = 0, histMax = 0;
+	for (int i = 0; i < hist.size(); i++) {
+		if (hist[i] == 0) continue;
 
-        histMin = i;
-        break;
-    }
-    for (int i = 255; i >= 0; i--) {
-        if (hist[i] == 0) continue;
+		histMin = i;
+		break;
+	}
+	for (int i = 255; i >= 0; i--) {
+		if (hist[i] == 0) continue;
 
-        histMax = i;
-        break;
-    }
+		histMax = i;
+		break;
+	}
 
-    QVariant hisVar;
-    hisVar.setValue(hist);
+	QVariant hisVar;
+	hisVar.setValue(hist);
 
-    emit sendMinMax(row, col, histMin, histMax, histMin, histMax);
-    emit sendImage(row, col, true, rawDataList[row][col].nowImage, hisVar);
+	emit sendMinMax(row, col, histMin, histMax, histMin, histMax);
+	emit sendImage(row, col, true, rawDataList[row][col].nowImage, hisVar);
 }
 
-void RawImage::openImageBySon(int row, int col, 
-    QString path, qreal w, qreal h, QString d,
-    bool reverse) 
+void RawImage::openImageBySon(int row, int col,
+	QString path, qreal w, qreal h, QString d,
+	bool reverse)
 {
 	if (w == 0.0 || h == 0.0) {
 		QImage temp;
-        QVariant hisVar;
-        hisVar.setValue(std::vector<int>());
+		QVariant hisVar;
+		hisVar.setValue(std::vector<int>());
 		sendImage(row, col, false, temp, hisVar);
 		return;
 	}
@@ -217,12 +219,12 @@ void RawImage::openImageBySon(int row, int col,
 	rawDataList[row][col] = data;
 
 	if (!data.imageType.compare("raw", Qt::CaseInsensitive)) {
-        openRawImage(row, col, reverse);
+		openRawImage(row, col, reverse);
 	}
 	else if (!data.imageType.compare("png", Qt::CaseInsensitive)
 		|| !data.imageType.compare("jpg", Qt::CaseInsensitive)
-        || !data.imageType.compare("bmp", Qt::CaseInsensitive))
-    {
+		|| !data.imageType.compare("bmp", Qt::CaseInsensitive))
+	{
 		openOtherTypeImage(row, col);
 	}
 }
@@ -236,79 +238,79 @@ void RawImage::saveImageBySon(int row, int col, QString path, QString type) {
 	}
 }
 
-void RawImage::autoImageBySon(int row, int col){
-    if(rawDataList[row][col].imageType.compare("raw", Qt::CaseInsensitive)) return;
-    int limit = rawDataList[row][col].pixelCount / 10;
-    // || (rawDataList[row][col].hmax == rawDataList[row][col].hmin && rawDataList[row][col].hmin == 255)
-    if (rawDataList[row][col].autoThreshold < 10)
-        rawDataList[row][col].autoThreshold = 5000;
-    else
-        rawDataList[row][col].autoThreshold /= 2;
+void RawImage::autoImageBySon(int row, int col) {
+	if (rawDataList[row][col].imageType.compare("raw", Qt::CaseInsensitive)) return;
+	int limit = rawDataList[row][col].pixelCount / 10;
+	// || (rawDataList[row][col].hmax == rawDataList[row][col].hmin && rawDataList[row][col].hmin == 255)
+	if (rawDataList[row][col].autoThreshold < 10)
+		rawDataList[row][col].autoThreshold = 5000;
+	else
+		rawDataList[row][col].autoThreshold /= 2;
 
-    int threshold = rawDataList[row][col].pixelCount / rawDataList[row][col].autoThreshold;
-    int i = -1;
-    bool found = false;
-    int count;
-    do {
-        i++;
-        count = rawDataList[row][col].histogram[i];
-        if (count > limit) count = 0;
-        found = count > threshold;
-    } while (!found && i < 255);
-    int hmin = i;
-    i = 256;
-    do {
-        i--;
-        count = rawDataList[row][col].histogram[i];
-        if (count > limit) count = 0;
-        found = count > threshold;
-    } while (!found && i > 0);
-    int hmax = i;
+	int threshold = rawDataList[row][col].pixelCount / rawDataList[row][col].autoThreshold;
+	int i = -1;
+	bool found = false;
+	int count;
+	do {
+		i++;
+		count = rawDataList[row][col].histogram[i];
+		if (count > limit) count = 0;
+		found = count > threshold;
+	} while (!found && i < 255);
+	int hmin = i;
+	i = 256;
+	do {
+		i--;
+		count = rawDataList[row][col].histogram[i];
+		if (count > limit) count = 0;
+		found = count > threshold;
+	} while (!found && i > 0);
+	int hmax = i;
 
-    double newMin, newMax;
-    if (hmax >= hmin) {
-        double binSize = (rawDataList[row][col].imax - rawDataList[row][col].imin) / 256.0;
-        newMin = rawDataList[row][col].imin + hmin * binSize;
-        newMax = rawDataList[row][col].imin + hmax * binSize;
-        if (newMin == newMax)
-        {
-            newMin = rawDataList[row][col].imin;
-            newMax = rawDataList[row][col].imax;
-        }
-    }
-    else {
-        newMin = rawDataList[row][col].imin;
-        newMax = rawDataList[row][col].imax;
-        rawDataList[row][col].autoThreshold = 5000;
-    }
+	double newMin, newMax;
+	if (hmax >= hmin) {
+		double binSize = (rawDataList[row][col].imax - rawDataList[row][col].imin) / 256.0;
+		newMin = rawDataList[row][col].imin + hmin * binSize;
+		newMax = rawDataList[row][col].imin + hmax * binSize;
+		if (newMin == newMax)
+		{
+			newMin = rawDataList[row][col].imin;
+			newMax = rawDataList[row][col].imax;
+		}
+	}
+	else {
+		newMin = rawDataList[row][col].imin;
+		newMax = rawDataList[row][col].imax;
+		rawDataList[row][col].autoThreshold = 5000;
+	}
 
-    emit sendMinMax(row, col, rawDataList[row][col].imin, rawDataList[row][col].imax, newMin, newMax);
-    if (rawDataList[row][col].isReverse)
-    {
-        setGrayscale(row, col, newMax, newMin);
-    }
-    else
-    {
-        setGrayscale(row, col, newMin, newMax);
-    }
+	emit sendMinMax(row, col, rawDataList[row][col].imin, rawDataList[row][col].imax, newMin, newMax);
+	if (rawDataList[row][col].isReverse)
+	{
+		setGrayscale(row, col, newMax, newMin);
+	}
+	else
+	{
+		setGrayscale(row, col, newMin, newMax);
+	}
 
-    emit sendAutoTip(true);
+	emit sendAutoTip(true);
 }
 
-void RawImage::reverseImageBySon(int row, int col){
-    std::swap(rawDataList[row][col].tempMin, rawDataList[row][col].tempMax);
-    double unit = (rawDataList[row][col].tempMax - rawDataList[row][col].tempMin) / 256.0;
-    for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
-    {
-        double temp = (rawDataList[row][col].pData16[i] - rawDataList[row][col].tempMin) / unit;
-        if (temp < 0)temp = 0;
-        if (temp > 255)temp = 255;
-        rawDataList[row][col].pData8[i] = uchar(temp);
-    }
-    rawDataList[row][col].isReverse = !rawDataList[row][col].isReverse;
-    rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
-        int(rawDataList[row][col].nowImage.width()),
-        int(rawDataList[row][col].nowImage.height()),
-        QImage::Format_Indexed8);
-    emit sendReverseTip(true);
+void RawImage::reverseImageBySon(int row, int col) {
+	std::swap(rawDataList[row][col].tempMin, rawDataList[row][col].tempMax);
+	double unit = (rawDataList[row][col].tempMax - rawDataList[row][col].tempMin) / 256.0;
+	for (int i = 0; i < rawDataList[row][col].pixelCount; i++)
+	{
+		double temp = (rawDataList[row][col].pData16[i] - rawDataList[row][col].tempMin) / unit;
+		if (temp < 0)temp = 0;
+		if (temp > 255)temp = 255;
+		rawDataList[row][col].pData8[i] = uchar(temp);
+	}
+	rawDataList[row][col].isReverse = !rawDataList[row][col].isReverse;
+	rawDataList[row][col].nowImage = QImage(&rawDataList[row][col].pData8[0],
+		int(rawDataList[row][col].nowImage.width()),
+		int(rawDataList[row][col].nowImage.height()),
+		QImage::Format_Indexed8);
+	emit sendReverseTip(true);
 }
